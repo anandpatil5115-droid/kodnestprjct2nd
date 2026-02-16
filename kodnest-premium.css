@@ -65,7 +65,7 @@ h4 {
 
 /* TOP BAR */
 .kn-top-bar {
-    height: 56px;
+    height: 64px;
     padding: 0 var(--space-24);
     display: flex;
     align-items: center;
@@ -73,6 +73,54 @@ h4 {
     border-bottom: 1px solid var(--color-border);
     background: var(--color-white);
     font-size: 14px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.kn-nav {
+    display: flex;
+    gap: var(--space-40);
+    height: 100%;
+}
+
+.kn-nav-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #666;
+    font-weight: 500;
+    height: 100%;
+    border-bottom: 2px solid transparent;
+    transition: var(--transition);
+    padding: 0 4px;
+}
+
+.kn-nav-link:hover {
+    color: var(--color-text);
+}
+
+.kn-nav-link--active {
+    color: var(--color-accent);
+    border-bottom-color: var(--color-accent);
+}
+
+/* Mobile Toggle */
+.kn-nav-toggle {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+}
+
+.kn-nav-toggle span {
+    display: block;
+    width: 20px;
+    height: 2px;
+    background: var(--color-text);
+    margin: 4px 0;
+    transition: var(--transition);
 }
 
 .kn-project-name {
@@ -238,6 +286,40 @@ h4 {
 
 /* RESPONSIVE */
 @media (max-width: 900px) {
+    .kn-nav {
+        display: none;
+        position: absolute;
+        top: 64px;
+        left: 0;
+        width: 100%;
+        background: var(--color-white);
+        flex-direction: column;
+        padding: var(--space-16) var(--space-24);
+        height: auto;
+        border-bottom: 1px solid var(--color-border);
+        gap: var(--space-16);
+    }
+
+    .kn-nav--open {
+        display: flex;
+    }
+
+    .kn-nav-link {
+        height: 48px;
+        border-bottom: none;
+        padding: 0;
+    }
+
+    .kn-nav-link--active {
+        color: var(--color-accent);
+        padding-left: var(--space-8);
+        border-left: 2px solid var(--color-accent);
+    }
+
+    .kn-nav-toggle {
+        display: block;
+    }
+
     .kn-main {
         grid-template-columns: 1fr;
         padding-bottom: 200px;

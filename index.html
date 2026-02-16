@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KodNest Premium Build System</title>
+    <title>Job Notification Tracker | KodNest Premium</title>
     <link rel="stylesheet" href="kodnest-premium.css">
 </head>
 
@@ -12,20 +12,36 @@
     <div class="kn-container">
         <!-- Top Bar -->
         <header class="kn-top-bar">
-            <div class="kn-project-name">KODNEST_PREMIUM</div>
-            <div class="kn-progress">
-                <span>Initialization</span>
-                <span>/</span>
-                <span>Step 1 of 5</span>
+            <div class="kn-project-name">JOB_TRACKER</div>
+
+            <!-- Navigation -->
+            <nav class="kn-nav">
+                <a href="#/dashboard" class="kn-nav-link">Dashboard</a>
+                <a href="#/saved" class="kn-nav-link">Saved</a>
+                <a href="#/digest" class="kn-nav-link">Digest</a>
+                <a href="#/settings" class="kn-nav-link">Settings</a>
+                <a href="#/proof" class="kn-nav-link">Proof</a>
+            </nav>
+
+            <div style="display: flex; align-items: center; gap: 24px;">
+                <div class="kn-progress">
+                    <!-- Dynamic Progress -->
+                </div>
+                <div class="kn-badge">
+                    <!-- Dynamic Status -->
+                </div>
+                <button class="kn-nav-toggle" onclick="toggleMobileMenu()" aria-label="Toggle Menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
             </div>
-            <div class="kn-badge">In Progress</div>
         </header>
 
         <!-- Context Header -->
         <section class="kn-header">
-            <h1 class="kn-title">Design System Foundation</h1>
-            <p class="kn-subtext">Establishing a calm, intentional, and confident visual language for serious B2C
-                product manufacturing.</p>
+            <h1 class="kn-title">Welcome</h1>
+            <p class="kn-subtext">This section will be built in the next step.</p>
         </section>
 
         <!-- Main Workspace -->
@@ -33,31 +49,10 @@
             <!-- Primary Workspace -->
             <div class="kn-workspace">
                 <div class="kn-card">
-                    <h2>Primary Workspace</h2>
-                    <p class="kn-text-block kn-mt-16">
-                        This is where the main product interaction happens. The design system prioritizes generous
-                        whitespace,
-                        serif headings for confidence, and a clean sans-serif body for maximum legibility.
+                    <p class="kn-text-block">
+                        The route skeleton is now active. Navigation and layout are handled by the KodNest Premium Build
+                        System.
                     </p>
-                    <div class="kn-mt-24">
-                        <input type="text" class="kn-input" placeholder="Start typing something meaningful...">
-                    </div>
-                </div>
-
-                <div class="kn-card">
-                    <h3>Component Gallery</h3>
-                    <div class="kn-mt-24" style="display: flex; gap: 16px;">
-                        <button class="kn-button kn-button--primary">Primary Action</button>
-                        <button class="kn-button kn-button--secondary">Secondary Action</button>
-                    </div>
-                    <div class="kn-mt-24 kn-text-block">
-                        <p>Status badges allow for quick context identification without being flashy or loud.</p>
-                        <div class="kn-mt-16" style="display: flex; gap: 8px;">
-                            <span class="kn-badge">Not Started</span>
-                            <span class="kn-badge" style="background: #fff8e1; color: #b8860b;">Warning Mode</span>
-                            <span class="kn-badge kn-badge--shipped">Project Shipped</span>
-                        </div>
-                    </div>
                 </div>
             </div>
 
@@ -66,22 +61,8 @@
                 <div class="kn-card">
                     <h3>Panel Guide</h3>
                     <p class="kn-mt-8" style="font-size: 14px; color: #666;">
-                        This side panel provides context, copyable prompts, and quick actions to support the main build
-                        flow.
+                        This side panel provides context and tools to support the main build flow.
                     </p>
-                    <div class="kn-mt-24">
-                        <div class="kn-prompt-box">
-                            npm install kodnest-premium-system
-                        </div>
-                        <button class="kn-button kn-button--secondary kn-mt-16" style="width: 100%;">Copy
-                            Prompt</button>
-                    </div>
-                    <div class="kn-mt-24" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-                        <button class="kn-button kn-button--secondary" style="font-size: 12px; padding: 8px;">It
-                            Worked</button>
-                        <button class="kn-button kn-button--secondary"
-                            style="font-size: 12px; padding: 8px; color: #8b0000; border-color: #8b000033;">Error</button>
-                    </div>
                 </div>
             </aside>
         </main>
@@ -104,6 +85,9 @@
             </div>
         </footer>
     </div>
+
+    <!-- Application Script -->
+    <script src="app.js"></script>
 </body>
 
 </html>
