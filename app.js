@@ -398,7 +398,72 @@ const routes = {
             return `<div style="grid-column: 1/-1"><div class="kn-job-list">${saved.map(job => renderJobCard(job)).join('')}</div></div>`;
         }
     },
-    '/digest': { title: 'Daily Digest', subtext: 'Your top curated matches.', progress: 'Curation', step: '5/6', status: 'In Progress', render: () => `<div class="kn-workspace" style="grid-column: 1/-1"><div class="kn-empty-state"><div class="kn-empty-state__icon">📬</div><h2 class="kn-empty-state__title">Curated for 9:00 AM.</h2><p class="kn-empty-state__subtitle">Next digest is calculating.</p></div></div>` },
+    '/digest': {
+        title: 'Daily Digest',
+        subtext: 'Your curated top 10 matches for today.',
+        progress: 'Curation', step: '5/6', status: 'In Progress',
+        render: () => {
+            if (!userPrefs) {
+                return `<div class="kn-workspace" style="grid-column: 1 / -1">
+                    <div class="kn-empty-state">
+                        <div class="kn-empty-state__icon">📬</div>
+                        <h2 class="kn-empty-state__title">Personalized Digest Required</h2>
+                        <p class="kn-empty-state__subtitle">Set your preferences to activate the daily 9AM curation engine.</p>
+                        <div class="kn-mt-40"><a href="#/settings" class="kn-button kn-button--secondary">Set Preferences</a></div>
+                    </div>
+                </div>`;
+            }
+
+            const digest = getStoredDigest();
+            if (!digest) {
+                return `<div class="kn-workspace" style="grid-column: 1 / -1">
+                    <div class="kn-empty-state">
+                        <div class="kn-empty-state__icon">⛅</div>
+                        <h2 class="kn-empty-state__title">Today's digest is ready.</h2>
+                        <p class="kn-empty-state__subtitle">Click below to simulate the 9AM delivery based on your latest preferences.</p>
+                        <div class="kn-mt-40">
+                            <button class="kn-button kn-button--primary" onclick="window.generateDigest()">Generate Today's 9AM Digest (Simulated)</button>
+                            <p class="kn-simulation-note">Demo Mode: Daily 9AM trigger simulated manually.</p>
+                        </div>
+                    </div>
+                </div>`;
+            }
+
+            return `
+                <div style="grid-column: 1 / -1">
+                    <div class="kn-digest-actions">
+                        <button class="kn-button kn-button--secondary" onclick="window.copyDigestToClipboard()">Copy Digest to Clipboard</button>
+                        <button class="kn-button kn-button--secondary" onclick="window.createEmailDraft()">Create Email Draft</button>
+                        <button class="kn-button kn-button--secondary" onclick="window.generateDigest()" style="background: #fff; color: #111;">Regenerate</button>
+                    </div>
+                    <div class="kn-digest-container">
+                        <header class="kn-digest-header">
+                            <h2 style="font-size: 28px; letter-spacing: -0.01em;">Top 10 Jobs For You — 9AM Digest</h2>
+                            <p style="margin-top: 8px; color: #666;">${new Date().toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                        </header>
+                        <div class="kn-digest-body">
+                            ${digest.map(job => `
+                                <div class="kn-digest-item">
+                                    <div>
+                                        <h4 style="margin: 0; font-size: 18px;">${job.title}</h4>
+                                        <p style="margin: 4px 0 0; color: #666; font-size: 14px;">${job.company} • ${job.location} • ${job.experience} Exp</p>
+                                    </div>
+                                    <div style="text-align: right; display: flex; gap: 16px; align-items: center;">
+                                        <span class="kn-score-badge ${getScoreBadgeClass(calculateMatchScore(job, userPrefs))}">${calculateMatchScore(job, userPrefs)}% Match</span>
+                                        <a href="${job.applyUrl}" target="_blank" class="kn-button kn-button--primary" style="padding: 8px 24px; font-size: 13px;">Apply</a>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <footer class="kn-digest-footer">
+                            <p>This digest was generated based on your preferences at 9:00 AM.</p>
+                            <p class="kn-simulation-note">Simulated for demonstration purposes.</p>
+                        </footer>
+                    </div>
+                </div>
+            `;
+        }
+    },
     '/proof': { title: 'Proof of Build', subtext: 'Final validation of scoring engine.', progress: 'Finalization', step: '6/6', status: 'Shipped', render: () => `<div class="kn-workspace"><div class="kn-card"><h3>Matching Engine V1.0</h3><p class="kn-mt-16">Intelligence layer is fully integrated. All scoring rules are verified against specification.</p><div class="kn-mt-24" style="height: 120px; border: 1px solid #ddd; display: flex; align-items: center; justify-content: center; font-weight: 700;">DETERMINISTIC_SCORING_ACTIVE</div></div></div>` }
 };
 
