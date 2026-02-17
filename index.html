@@ -49,6 +49,214 @@
     <script>
         // Simple router state
         let currentRoute = window.location.hash.slice(1) || '/';
+        let currentAnalysis = null;
+
+        // Analysis Engine
+        const skillCategories = {
+            'Core CS': ['DSA', 'OOP', 'DBMS', 'OS', 'Networks', 'Operating System', 'Data Structures', 'Algorithms'],
+            'Languages': ['Java', 'Python', 'JavaScript', 'TypeScript', 'C++', 'C#', 'Go', 'Rust', 'Kotlin'],
+            'Web': ['React', 'Next.js', 'Node.js', 'Express', 'REST', 'GraphQL', 'Angular', 'Vue', 'HTML', 'CSS'],
+            'Data': ['SQL', 'MongoDB', 'PostgreSQL', 'MySQL', 'Redis', 'NoSQL', 'Database'],
+            'Cloud/DevOps': ['AWS', 'Azure', 'GCP', 'Docker', 'Kubernetes', 'CI/CD', 'Linux', 'Jenkins', 'Git'],
+            'Testing': ['Selenium', 'Cypress', 'Playwright', 'JUnit', 'PyTest', 'Jest', 'Testing']
+        };
+
+        function extractSkills(jdText) {
+            const text = jdText.toLowerCase();
+            const extracted = {};
+
+            Object.keys(skillCategories).forEach(category => {
+                const found = skillCategories[category].filter(skill =>
+                    text.includes(skill.toLowerCase())
+                );
+                if (found.length > 0) {
+                    extracted[category] = [...new Set(found)];
+                }
+            });
+
+            return Object.keys(extracted).length > 0 ? extracted : { 'General': ['General fresher stack'] };
+        }
+
+        function calculateReadiness(skills, company, role, jdLength) {
+            let score = 35;
+            score += Object.keys(skills).length * 5;
+            if (company && company.trim()) score += 10;
+            if (role && role.trim()) score += 10;
+            if (jdLength > 800) score += 10;
+            return Math.min(score, 100);
+        }
+
+        function generateChecklist(skills) {
+            const hasSkill = (cat) => skills[cat] && skills[cat].length > 0;
+
+            return {
+                'Round 1: Aptitude & Basics': [
+                    'Practice quantitative aptitude (numbers, percentages)',
+                    'Solve logical reasoning puzzles',
+                    'Review verbal ability and comprehension',
+                    'Practice time management for MCQ tests',
+                    'Revise basic mathematics and statistics'
+                ],
+                'Round 2: DSA & Core CS': [
+                    hasSkill('Core CS') ? 'Revise DSA: arrays, strings, linked lists, trees' : 'Study basic data structures',
+                    hasSkill('Core CS') ? 'Practice sorting and searching algorithms' : 'Learn algorithm basics',
+                    'Review OOP concepts: inheritance, polymorphism, encapsulation',
+                    'Study DBMS: normalization, indexing, transactions',
+                    'Revise OS: processes, threads, memory management',
+                    hasSkill('Core CS') ? 'Practice coding problems on LeetCode/HackerRank' : 'Start with easy coding problems'
+                ],
+                'Round 3: Technical Interview': [
+                    hasSkill('Web') ? `Prepare ${skills['Web'].join(', ')} concepts` : 'Review your tech stack',
+                    hasSkill('Languages') ? `Practice coding in ${skills['Languages'][0]}` : 'Practice your primary language',
+                    'Prepare to explain your projects in detail',
+                    hasSkill('Data') ? 'Review database design and query optimization' : 'Study basic SQL queries',
+                    hasSkill('Cloud/DevOps') ? `Revise ${skills['Cloud/DevOps'].join(', ')}` : 'Learn basic Git commands',
+                    'Prepare system design basics (if asked)'
+                ],
+                'Round 4: Managerial & HR': [
+                    'Prepare "Tell me about yourself" answer',
+                    'List your strengths and weaknesses with examples',
+                    'Prepare STAR method answers for behavioral questions',
+                    'Research the company culture and values',
+                    'Prepare questions to ask the interviewer',
+                    'Practice explaining why you want this role'
+                ]
+            };
+        }
+
+        function generate7DayPlan(skills) {
+            const hasSkill = (cat) => skills[cat] && skills[cat].length > 0;
+
+            return {
+                'Day 1-2: Basics & Core CS': [
+                    'Revise OOP, DBMS, OS fundamentals',
+                    hasSkill('Core CS') ? 'Practice 5-10 easy DSA problems' : 'Learn basic data structures',
+                    'Review your resume and projects',
+                    'Prepare project explanations'
+                ],
+                'Day 3-4: DSA & Coding': [
+                    'Solve 10-15 medium DSA problems',
+                    hasSkill('Languages') ? `Practice ${skills['Languages'][0]} syntax` : 'Practice your primary language',
+                    'Focus on arrays, strings, and hashmaps',
+                    'Time yourself while solving'
+                ],
+                'Day 5: Projects & Stack': [
+                    hasSkill('Web') ? `Revise ${skills['Web'].slice(0, 2).join(', ')} concepts` : 'Review your tech stack',
+                    'Prepare detailed project walkthroughs',
+                    hasSkill('Data') ? 'Practice SQL queries and database design' : 'Learn basic SQL',
+                    'Update your resume with quantifiable achievements'
+                ],
+                'Day 6: Mock Interviews': [
+                    'Practice behavioral questions with STAR method',
+                    'Do a mock technical interview with a friend',
+                    'Record yourself answering common questions',
+                    'Review and improve your communication'
+                ],
+                'Day 7: Revision & Weak Areas': [
+                    'Revisit topics you struggled with',
+                    'Solve 5 problems from weak areas',
+                    'Review company-specific information',
+                    'Prepare questions for the interviewer',
+                    'Get a good night\'s sleep'
+                ]
+            };
+        }
+
+        function generateQuestions(skills) {
+            const questions = [];
+            const hasSkill = (cat) => skills[cat] && skills[cat].length > 0;
+
+            if (hasSkill('Core CS')) {
+                questions.push(
+                    'Explain the difference between stack and heap memory.',
+                    'How would you optimize search in sorted data?',
+                    'What is the time complexity of common sorting algorithms?'
+                );
+            }
+
+            if (hasSkill('Languages')) {
+                const lang = skills['Languages'][0];
+                questions.push(
+                    `Explain key features of ${lang}.`,
+                    `What are the differences between ${lang} and other languages you know?`
+                );
+            }
+
+            if (hasSkill('Web')) {
+                if (skills['Web'].some(s => s.toLowerCase().includes('react'))) {
+                    questions.push(
+                        'Explain state management options in React.',
+                        'What are React hooks and when would you use them?'
+                    );
+                }
+                questions.push('Explain the difference between REST and GraphQL.');
+            }
+
+            if (hasSkill('Data')) {
+                questions.push(
+                    'Explain indexing and when it helps performance.',
+                    'What is database normalization and why is it important?'
+                );
+            }
+
+            if (hasSkill('Cloud/DevOps')) {
+                questions.push(
+                    'Explain the benefits of containerization with Docker.',
+                    'What is CI/CD and why is it important?'
+                );
+            }
+
+            // Fill remaining with general questions
+            const general = [
+                'Walk me through your most challenging project.',
+                'How do you handle debugging complex issues?',
+                'Explain a time you optimized code performance.',
+                'How do you stay updated with new technologies?',
+                'Describe your development workflow.'
+            ];
+
+            while (questions.length < 10) {
+                questions.push(general[questions.length % general.length]);
+            }
+
+            return questions.slice(0, 10);
+        }
+
+        function saveToHistory(analysis) {
+            const history = JSON.parse(localStorage.getItem('placementHistory') || '[]');
+            history.unshift(analysis);
+            localStorage.setItem('placementHistory', JSON.stringify(history.slice(0, 20)));
+        }
+
+        function getHistory() {
+            return JSON.parse(localStorage.getItem('placementHistory') || '[]');
+        }
+
+        function analyzeJD(company, role, jdText) {
+            const skills = extractSkills(jdText);
+            const readinessScore = calculateReadiness(skills, company, role, jdText.length);
+            const checklist = generateChecklist(skills);
+            const plan = generate7DayPlan(skills);
+            const questions = generateQuestions(skills);
+
+            const analysis = {
+                id: Date.now().toString(),
+                createdAt: new Date().toISOString(),
+                company: company || 'Unknown Company',
+                role: role || 'Unknown Role',
+                jdText,
+                extractedSkills: skills,
+                checklist,
+                plan,
+                questions,
+                readinessScore
+            };
+
+            saveToHistory(analysis);
+            currentAnalysis = analysis;
+
+            return analysis;
+        }
 
         // Icon component (simple SVG)
         function Icon(name, size = 20) {
@@ -64,7 +272,9 @@
                 'user': `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`,
                 'log-out': `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>`,
                 'bell': `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>`,
-                'construction': `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="8" rx="1"/><path d="M17 14v7"/><path d="M7 14v7"/><path d="M17 3v3"/><path d="M7 3v3"/><path d="M10 14 2.3 6.3"/><path d="m14 6 7.7 7.7"/><path d="m8 6 8 8"/></svg>`
+                'construction': `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="8" rx="1"/><path d="M17 14v7"/><path d="M7 14v7"/><path d="M17 3v3"/><path d="M7 3v3"/><path d="M10 14 2.3 6.3"/><path d="m14 6 7.7 7.7"/><path d="m8 6 8 8"/></svg>`,
+                'search': `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>`,
+                'clock': `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`
             };
             return icons[name] || '';
         }
@@ -158,9 +368,10 @@
                         </div>
                         <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
                             ${navLink('/dashboard', 'layout-dashboard', 'Dashboard')}
+                            ${navLink('/dashboard/analyze', 'search', 'Analyze JD')}
                             ${navLink('/dashboard/practice', 'code-2', 'Practice')}
                             ${navLink('/dashboard/assessments', 'clipboard-check', 'Assessments')}
-                            ${navLink('/dashboard/resources', 'library', 'Resources')}
+                            ${navLink('/dashboard/history', 'clock', 'History')}
                             ${navLink('/dashboard/profile', 'user', 'Profile')}
                         </nav>
                         <div class="p-4 border-t border-slate-200">
@@ -306,11 +517,176 @@
                         </div>
                     </div>
                 `;
+            } else if (currentRoute === '/dashboard/analyze') {
+                return `
+                    <div class="max-w-4xl mx-auto">
+                        <h2 class="text-3xl font-bold text-slate-900 mb-2">Analyze Job Description</h2>
+                        <p class="text-slate-500 mb-8">Get personalized preparation insights based on the JD</p>
+                        
+                        <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-8">
+                            <form id="analyze-form" onsubmit="handleAnalyze(event)">
+                                <div class="space-y-6">
+                                    <div>
+                                        <label class="block text-sm font-medium text-slate-700 mb-2">Company Name</label>
+                                        <input type="text" id="company-input" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="e.g., Google, Microsoft">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-slate-700 mb-2">Role</label>
+                                        <input type="text" id="role-input" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="e.g., Software Engineer, Data Analyst">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-slate-700 mb-2">Job Description *</label>
+                                        <textarea id="jd-input" required rows="10" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Paste the complete job description here..."></textarea>
+                                    </div>
+                                    <button type="submit" class="w-full bg-primary text-white px-6 py-3 rounded-lg font-medium hover:bg-primary-dark transition-colors">
+                                        Analyze & Generate Plan
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                `;
+            } else if (currentRoute === '/dashboard/history') {
+                const history = getHistory();
+                return `
+                    <div class="max-w-6xl mx-auto">
+                        <h2 class="text-3xl font-bold text-slate-900 mb-8">Analysis History</h2>
+                        ${history.length === 0 ? `
+                            <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-12 text-center">
+                                ${Icon('clock', 48)}
+                                <p class="mt-4 text-slate-500">No analysis history yet. Start by analyzing a job description!</p>
+                                <button onclick="navigate('/dashboard/analyze')" class="mt-6 bg-primary text-white px-6 py-2 rounded-lg font-medium hover:bg-primary-dark transition-colors">
+                                    Analyze JD
+                                </button>
+                            </div>
+                        ` : `
+                            <div class="grid gap-4">
+                                ${history.map(item => `
+                                    <div onclick="viewAnalysis('${item.id}')" class="bg-white rounded-xl border border-slate-200 shadow-sm p-6 hover:border-primary transition-colors cursor-pointer">
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex-1">
+                                                <h3 class="text-lg font-bold text-slate-900">${item.company} - ${item.role}</h3>
+                                                <p class="text-sm text-slate-500 mt-1">${new Date(item.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</p>
+                                            </div>
+                                            <div class="flex items-center gap-4">
+                                                <div class="text-right">
+                                                    <p class="text-2xl font-bold text-primary">${item.readinessScore}</p>
+                                                    <p class="text-xs text-slate-500">Readiness</p>
+                                                </div>
+                                                <div class="text-primary">
+                                                    ${Icon('search', 24)}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `}
+                    </div>
+                `;
+            } else if (currentRoute.startsWith('/dashboard/results')) {
+                const analysis = currentAnalysis;
+                if (!analysis) {
+                    return `
+                        <div class="max-w-4xl mx-auto text-center">
+                            <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-12">
+                                ${Icon('search', 48)}
+                                <p class="mt-4 text-slate-500">No analysis found. Please analyze a job description first.</p>
+                                <button onclick="navigate('/dashboard/analyze')" class="mt-6 bg-primary text-white px-6 py-2 rounded-lg font-medium hover:bg-primary-dark transition-colors">
+                                    Analyze JD
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                return `
+                    <div class="max-w-6xl mx-auto">
+                        <div class="flex items-center justify-between mb-8">
+                            <div>
+                                <h2 class="text-3xl font-bold text-slate-900">${analysis.company}</h2>
+                                <p class="text-slate-500">${analysis.role}</p>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-5xl font-bold text-primary">${analysis.readinessScore}</p>
+                                <p class="text-sm text-slate-500">Readiness Score</p>
+                            </div>
+                        </div>
+                        
+                        <div class="grid gap-6">
+                            <!-- Extracted Skills -->
+                            <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+                                <h3 class="text-lg font-bold text-slate-900 mb-4">Extracted Skills</h3>
+                                <div class="space-y-3">
+                                    ${Object.entries(analysis.extractedSkills).map(([category, skills]) => `
+                                        <div>
+                                            <p class="text-sm font-medium text-slate-700 mb-2">${category}</p>
+                                            <div class="flex flex-wrap gap-2">
+                                                ${skills.map(skill => `
+                                                    <span class="px-3 py-1 bg-indigo-100 text-primary rounded-full text-sm font-medium">${skill}</span>
+                                                `).join('')}
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                            
+                            <!-- Round-wise Checklist -->
+                            <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+                                <h3 class="text-lg font-bold text-slate-900 mb-4">Round-wise Preparation Checklist</h3>
+                                <div class="space-y-6">
+                                    ${Object.entries(analysis.checklist).map(([round, items]) => `
+                                        <div>
+                                            <h4 class="font-bold text-slate-900 mb-3">${round}</h4>
+                                            <ul class="space-y-2">
+                                                ${items.map(item => `
+                                                    <li class="flex items-start gap-2 text-sm text-slate-600">
+                                                        <span class="text-primary mt-1">•</span>
+                                                        <span>${item}</span>
+                                                    </li>
+                                                `).join('')}
+                                            </ul>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                            
+                            <!-- 7-Day Plan -->
+                            <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+                                <h3 class="text-lg font-bold text-slate-900 mb-4">7-Day Preparation Plan</h3>
+                                <div class="space-y-4">
+                                    ${Object.entries(analysis.plan).map(([day, tasks]) => `
+                                        <div class="border-l-4 border-primary pl-4">
+                                            <h4 class="font-bold text-slate-900 mb-2">${day}</h4>
+                                            <ul class="space-y-1">
+                                                ${tasks.map(task => `
+                                                    <li class="text-sm text-slate-600">• ${task}</li>
+                                                `).join('')}
+                                            </ul>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                            
+                            <!-- Interview Questions -->
+                            <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+                                <h3 class="text-lg font-bold text-slate-900 mb-4">10 Likely Interview Questions</h3>
+                                <ol class="space-y-3">
+                                    ${analysis.questions.map((q, i) => `
+                                        <li class="flex gap-3">
+                                            <span class="flex-shrink-0 w-6 h-6 bg-primary text-white rounded-full flex items-center justify-center text-xs font-bold">${i + 1}</span>
+                                            <span class="text-slate-700">${q}</span>
+                                        </li>
+                                    `).join('')}
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                `;
             } else {
                 const routes = {
                     '/dashboard/practice': { title: 'Practice', desc: 'Solve coding problems and improve your skills.' },
                     '/dashboard/assessments': { title: 'Assessments', desc: 'Take mock tests and evaluate your readiness.' },
-                    '/dashboard/resources': { title: 'Resources', desc: 'Access study materials and preparation guides.' },
                     '/dashboard/profile': { title: 'Profile', desc: 'Manage your account and track your progress.' }
                 };
                 const current = routes[currentRoute] || { title: 'Page', desc: 'Content coming soon.' };
@@ -336,6 +712,25 @@
                     <span class="font-medium">${label}</span>
                 </a>
             `;
+        }
+
+        function handleAnalyze(event) {
+            event.preventDefault();
+            const company = document.getElementById('company-input').value;
+            const role = document.getElementById('role-input').value;
+            const jdText = document.getElementById('jd-input').value;
+
+            analyzeJD(company, role, jdText);
+            navigate('/dashboard/results');
+        }
+
+        function viewAnalysis(id) {
+            const history = getHistory();
+            const analysis = history.find(item => item.id === id);
+            if (analysis) {
+                currentAnalysis = analysis;
+                navigate('/dashboard/results');
+            }
         }
 
         function navigate(path) {
