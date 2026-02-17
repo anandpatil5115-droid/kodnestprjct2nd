@@ -4,135 +4,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KodNest Premium Design System</title>
+    <title>KodNest Premium Style Guide</title>
     <link rel="stylesheet" href="kodnest-premium.css">
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Helper for demo visualization */
+        body {
+            padding-bottom: 80px;
+        }
+
+        /* Ensure footer doesn't cover content */
+    </style>
 </head>
 
 <body>
+
     <div class="app-container">
-        <!-- Top Bar -->
+        <!-- TOP BAR -->
         <header class="top-bar">
             <div class="top-bar-left">
-                <div class="top-bar-brand">KodNest Premium</div>
-                <span class="text-subtle">/</span>
-                <div class="text-subtle" style="font-weight: 500;">Design System v1.0</div>
+                <span class="brand-name">KodNest Premium</span>
             </div>
             <div class="top-bar-center">
-                <div class="badge badge-progress">Step 1 / 1</div>
+                <span class="subtext">Step 1 / 5: Foundation Setup</span>
             </div>
             <div class="top-bar-right">
-                <div class="badge badge-status">In Review</div>
+                <span class="badge badge-progress">In Progress</span>
             </div>
         </header>
 
-        <!-- Main Content -->
-        <div class="main-content">
-            <div class="context-header">
-                <h1>Design System Verification</h1>
-                <p>This page validates the "Calm, Intentional, Coherent" design philosophy. No gradients, no noise, just
-                    structure.</p>
-            </div>
+        <!-- CONTEXT HEADER -->
+        <section class="context-header">
+            <h1>Design System Verification</h1>
+            <p class="subtext">Verify all core components against the premium philosophy: Calm, Intentional, Coherent,
+                Confident.</p>
+        </section>
 
-            <div class="workspace-grid">
-                <!-- Primary Workspace -->
-                <div class="workspace-primary">
-                    <!-- Typography Section -->
-                    <div class="card">
-                        <h3>Typography</h3>
-                        <div class="mb-4">
-                            <h1>Heading 1: Serif, Confident</h1>
-                            <h2>Heading 2: Structured, Clear</h2>
-                            <h3>Heading 3: Section Title</h3>
-                            <h4>Heading 4: Component Label</h4>
-                            <p>Body text: Clean sans-serif, 16px size for optimal readability. The color is #555555 on
-                                #F7F6F3 background. Max line width is constrained to 720px to ensure a comfortable
-                                reading experience for the user.</p>
-                        </div>
+        <!-- MAIN WORKSPACE -->
+        <main class="workspace">
+
+            <!-- PRIMARY PANEL (70%) -->
+            <div class="primary-panel">
+
+                <div class="card">
+                    <h3>Typography & Spacing</h3>
+                    <p>This is a standard paragraph using the system font stack. It is clean, readable, and constrained
+                        to a maximum width for optimal legibility. The vertical rhythm is set by a strict spacing scale.
+                    </p>
+                    <p class="subtext">This is smaller subtext for hints or metadata.</p>
+                </div>
+
+                <div class="card">
+                    <h3>Interactive Components</h3>
+                    <p style="margin-bottom: var(--s-3);">Buttons must be solid deep red or clear outlined.</p>
+
+                    <div style="display: flex; gap: var(--s-2); margin-bottom: var(--s-3);">
+                        <button class="btn btn-primary">Primary Action</button>
+                        <button class="btn btn-secondary">Secondary Action</button>
                     </div>
 
-                    <!-- Components Section -->
-                    <div class="card">
-                        <h3>Core Components</h3>
-
-                        <h4 class="mt-4 mb-4">Buttons</h4>
-                        <div class="flex-row">
-                            <button class="btn btn-primary">Primary Action</button>
-                            <button class="btn btn-secondary">Secondary Action</button>
-                        </div>
-
-                        <h4 class="mt-4 mb-4">Inputs</h4>
-                        <div class="input-group">
-                            <label class="input-label">Project Name</label>
-                            <input type="text" class="input-field" placeholder="e.g. Flight Booking App"
-                                value="KodNest Build System">
-                        </div>
-                        <div class="input-group">
-                            <label class="input-label">Description</label>
-                            <input type="text" class="input-field" placeholder="Brief description...">
-                        </div>
-
-                        <h4 class="mt-4 mb-4">Badges</h4>
-                        <div class="flex-row">
-                            <span class="badge badge-status">Not Started</span>
-                            <span class="badge badge-progress">In Progress</span>
-                            <span class="badge badge-success">Shipped</span>
-                        </div>
+                    <div style="margin-top: var(--s-3);">
+                        <label
+                            style="font-weight: 600; font-size: 14px; display: block; margin-bottom: var(--s-1);">Input
+                            Field</label>
+                        <input type="text" class="input-field" placeholder="Type something calm...">
                     </div>
                 </div>
 
-                <!-- Secondary Panel -->
-                <div class="panel-secondary">
-                    <div class="card" style="background: transparent; border: none; padding-left: 0;">
-                        <h4>System Rules</h4>
-                        <p class="text-subtle">
-                            1. Max 4 dominant colors.<br>
-                            2. Serif headings, Sans body.<br>
-                            3. No drop shadows on cards.<br>
-                            4. Consistent 4px radius.
-                        </p>
-                    </div>
-
-                    <div class="card">
-                        <h4>Assistant Prompt</h4>
-                        <p class="mb-4 text-subtle">Copy this context for the AI:</p>
-                        <div
-                            style="background: #f0f0f0; padding: 12px; border-radius: 4px; font-family: monospace; font-size: 12px; color: #333; margin-bottom: 16px;">
-                            System looks good. Proceed to build features.
-                        </div>
-                        <button class="btn btn-secondary w-full">
-                            <i data-lucide="copy" style="width: 16px; margin-right: 8px;"></i> Copy
-                        </button>
+                <div class="card">
+                    <h3>Alerts & Status</h3>
+                    <div style="display: flex; gap: var(--s-2); align-items: center;">
+                        <span class="badge badge-status">Not Started</span>
+                        <span class="badge badge-progress">In Progress</span>
+                        <span class="badge badge-success">Shipped</span>
                     </div>
                 </div>
-            </div>
-        </div>
 
-        <!-- Proof Footer -->
+            </div>
+
+            <!-- SECONDARY PANEL (30%) -->
+            <aside class="secondary-panel">
+                <div class="card" style="border: none; background: transparent; padding: 0;">
+                    <h4>Step Explanation</h4>
+                    <p class="subtext">Use this panel to guide the user or provide quick access actions.</p>
+                </div>
+
+                <div class="prompt-box">
+                    > This is a copyable prompt box for generating code or assets.
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: var(--s-2);">
+                    <button class="btn btn-secondary" style="justify-content: center;">Copy Logic</button>
+                    <button class="btn btn-primary" style="justify-content: center;">Build in Lovable</button>
+                </div>
+            </aside>
+
+        </main>
+
+        <!-- PROOF FOOTER -->
         <footer class="proof-footer">
-            <div class="checklist">
-                <div class="checklist-item">
-                    <span class="checkbox-visual checked"></span>
-                    UI Built
+            <div style="display: flex; gap: var(--s-3);">
+                <div class="proof-item">
+                    <div class="checkbox checked"></div>
+                    <span>UI Built</span>
                 </div>
-                <div class="checklist-item">
-                    <span class="checkbox-visual"></span>
-                    Logic Working
+                <div class="proof-item">
+                    <div class="checkbox"></div>
+                    <span>Logic Working</span>
                 </div>
-                <div class="checklist-item">
-                    <span class="checkbox-visual"></span>
-                    Deployed
+                <div class="proof-item">
+                    <div class="checkbox"></div>
+                    <span>Test Passed</span>
                 </div>
             </div>
             <div>
-                <button class="btn btn-primary" style="padding: 8px 16px; font-size: 12px;">Confirm Design</button>
+                <button class="btn btn-primary" style="height: 32px; padding: 0 16px;">Ship It</button>
             </div>
         </footer>
+
     </div>
-    <script>
-        lucide.createIcons();
-    </script>
+
 </body>
 
 </html>
