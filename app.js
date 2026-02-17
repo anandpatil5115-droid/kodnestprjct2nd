@@ -453,6 +453,8 @@ const routes = {
     '/dashboard': {
         title: 'Dashboard', subtext: 'Intelligent job discovery for the Indian tech market.',
         progress: 'Overview', step: '2/6', status: 'In Progress',
+        explanation: 'The dashboard serves as your mission control for job discovery. Use the filter bar to refine your search or activate matching via settings.',
+        prompt: 'Filter for "Remote" jobs in "Bangalore" and sort by "Match Score".',
         render: () => `<div style="grid-column: 1 / -1">
             ${renderFilterBar()}
             <div class="kn-job-list" id="job-list-container">${allJobs.map(job => renderJobCard(job)).join('')}</div>
@@ -461,6 +463,8 @@ const routes = {
     '/settings': {
         title: 'Matching Preferences', subtext: 'Configure your profile to activate deterministic match scoring.',
         progress: 'Configuration', step: '3/6', status: 'In Progress',
+        explanation: 'Configure your target roles and skills. These values directly influence the weighted scoring engine used across the platform.',
+        prompt: 'Update experience to "1-3 years" and add "React" and "Node.js" to skills.',
         render: () => {
             const p = userPrefs || { roleKeywords: [], preferredLocations: [], preferredMode: ['Remote', 'Hybrid', 'Onsite',], experienceLevel: 'Fresher', skills: [], minMatchScore: 40 };
             return `
@@ -525,6 +529,8 @@ const routes = {
     '/saved': {
         title: 'Saved Jobs', subtext: 'Review roles you are preparing to apply for.',
         progress: 'Organization', step: '4/6', status: 'In Progress',
+        explanation: 'Your saved jobs are persisted locally. Use this space to track roles before you move them to the "Applied" status.',
+        prompt: 'Review your saved list and update the status of at least one job to "Applied".',
         render: () => {
             const saved = allJobs.filter(j => savedJobIds.includes(j.id));
             if (saved.length === 0) return `<div class="kn-workspace" style="grid-column: 1/-1"><div class="kn-empty-state"><div class="kn-empty-state__icon">🔖</div><h2 class="kn-empty-state__title">No saved jobs.</h2><p class="kn-empty-state__subtitle">Browse the dashboard to earmark roles.</p></div></div>`;
@@ -535,6 +541,8 @@ const routes = {
         title: 'Daily Digest',
         subtext: 'Your curated top 10 matches for today.',
         progress: 'Curation', step: '5/6', status: 'In Progress',
+        explanation: 'The digest simulates a daily 9 AM delivery of the best jobs matching your specific profile criteria.',
+        prompt: 'Generate the daily digest and copy the summary to your clipboard for external tracking.',
         render: () => {
             if (!userPrefs) {
                 return `<div class="kn-workspace" style="grid-column: 1 / -1">
@@ -752,22 +760,52 @@ function handleRouteChange() {
         activeRoute = routes['/'];
     }
 
-    const containerEl = document.querySelector('.kn-main');
+    const workspaceEl = document.getElementById('primary-workspace');
+    const panelEl = document.getElementById('secondary-panel');
     const headerEl = document.querySelector('.kn-header');
 
     if (hash === '/') {
         if (headerEl) headerEl.style.display = 'none';
-        if (containerEl) containerEl.style.display = 'block';
+        if (workspaceEl) workspaceEl.innerHTML = activeRoute.render ? activeRoute.render() : '';
+        if (panelEl) panelEl.style.display = 'none';
     } else {
         if (headerEl) headerEl.style.display = 'block';
-        if (containerEl) containerEl.style.display = 'grid';
+        if (workspaceEl) workspaceEl.parentElement.style.display = 'grid';
+        if (panelEl) panelEl.style.display = 'block';
+
         const titleEl = document.querySelector('.kn-title');
         const subtextEl = document.querySelector('.kn-subtext');
         if (titleEl) titleEl.textContent = activeRoute.title || '';
         if (subtextEl) subtextEl.textContent = activeRoute.subtext || '';
-    }
 
-    if (containerEl) containerEl.innerHTML = activeRoute.render ? activeRoute.render() : '';
+        // Render Primary Workspace
+        if (workspaceEl) workspaceEl.innerHTML = activeRoute.render ? activeRoute.render() : '';
+
+        // Render Standard Secondary Panel
+        if (panelEl) {
+            panelEl.innerHTML = `
+                <div class="kn-card">
+                    <h3>Step ${activeRoute.step || 'Info'}</h3>
+                    <p class="kn-mt-16" style="font-size: 14px; color: #666; line-height: 1.6;">
+                        ${activeRoute.explanation || 'Follow the primary workspace instructions to complete this milestone.'}
+                    </p>
+                    <div class="kn-mt-24">
+                        <label class="kn-label">Action Prompt</label>
+                        <div style="background: #f9f9f3; padding: 12px; border: 1px solid #e0ddd5; font-family: monospace; font-size: 12px; margin-bottom: 16px;">
+                            ${activeRoute.prompt || 'No prompt for this step.'}
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                            <button class="kn-button kn-button--secondary" style="font-size: 11px; padding: 10px;" onclick="navigator.clipboard.writeText('${activeRoute.prompt || ''}').then(() => showToast('Prompt copied'))">Copy Prompt</button>
+                            <button class="kn-button kn-button--primary" style="font-size: 11px; padding: 10px;">Build in Lovable</button>
+                            <button class="kn-button kn-button--secondary" style="font-size: 11px; padding: 10px;" onclick="showToast('Verified')">It Worked</button>
+                            <button class="kn-button kn-button--secondary" style="font-size: 11px; padding: 10px; color: var(--color-accent);" onclick="showToast('Error logged')">Error</button>
+                        </div>
+                        <button class="kn-button kn-button--secondary" style="width: 100%; margin-top: 8px; font-size: 11px; padding: 10px;">Add Screenshot</button>
+                    </div>
+                </div>
+            `;
+        }
+    }
 
     const progressEl = document.querySelector('.kn-progress');
     const statusEl = document.querySelector('.kn-badge');
