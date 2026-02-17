@@ -74,7 +74,12 @@
                 }
             });
 
-            return Object.keys(extracted).length > 0 ? extracted : { 'General': ['General fresher stack'] };
+            // If no skills detected, return default general skills
+            if (Object.keys(extracted).length === 0) {
+                extracted['Other'] = ['Communication', 'Problem solving', 'Basic coding', 'Projects'];
+            }
+
+            return extracted;
         }
 
         function calculateReadiness(skills, company, role, jdLength) {
@@ -229,7 +234,18 @@
         }
 
         function getHistory() {
-            return JSON.parse(localStorage.getItem('placementHistory') || '[]');
+            try {
+                const history = JSON.parse(localStorage.getItem('placementHistory') || '[]');
+                // Filter out any corrupted entries
+                return history.filter(entry => {
+                    return entry && entry.id && entry.jdText && entry.extractedSkills;
+                });
+            } catch (error) {
+                console.error('localStorage corrupted:', error);
+                // Clear corrupted data
+                localStorage.removeItem('placementHistory');
+                return [];
+            }
         }
 
         function analyzeJD(company, role, jdText) {
@@ -254,18 +270,19 @@
             const analysis = {
                 id: Date.now().toString(),
                 createdAt: new Date().toISOString(),
-                company: company || 'Unknown Company',
-                role: role || 'Unknown Role',
+                updatedAt: new Date().toISOString(),
+                company: company || '',
+                role: role || '',
                 jdText,
                 extractedSkills: skills,
+                roundMapping,
                 checklist,
-                plan,
+                plan7Days: plan,
                 questions,
-                baseReadinessScore: readinessScore,
-                readinessScore,
+                baseScore: readinessScore,
                 skillConfidenceMap,
-                companyIntel,
-                roundMapping
+                finalScore: readinessScore,
+                companyIntel
             };
 
             saveToHistory(analysis);
@@ -434,6 +451,9 @@
             // Recalculate readiness score
             updateReadinessScore();
 
+            // Update timestamp
+            currentAnalysis.updatedAt = new Date().toISOString();
+
             // Save to localStorage
             updateHistoryEntry(currentAnalysis);
 
@@ -444,7 +464,7 @@
         function updateReadinessScore() {
             if (!currentAnalysis) return;
 
-            let score = currentAnalysis.baseReadinessScore;
+            let score = currentAnalysis.baseScore;
 
             Object.entries(currentAnalysis.skillConfidenceMap).forEach(([skill, confidence]) => {
                 if (confidence === 'know') {
@@ -454,7 +474,7 @@
                 }
             });
 
-            currentAnalysis.readinessScore = Math.max(0, Math.min(100, score));
+            currentAnalysis.finalScore = Math.max(0, Math.min(100, score));
         }
 
         function updateHistoryEntry(analysis) {
@@ -475,7 +495,8 @@
         function export7DayPlan() {
             if (!currentAnalysis) return;
             let text = '7-DAY PREPARATION PLAN\n\n';
-            Object.entries(currentAnalysis.plan).forEach(([day, tasks]) => {
+            const plan = currentAnalysis.plan7Days || currentAnalysis.plan || {};
+            Object.entries(plan).forEach(([day, tasks]) => {
                 text += `${day}\n`;
                 tasks.forEach(task => text += `  • ${task}\n`);
                 text += '\n';
@@ -507,9 +528,9 @@
             if (!currentAnalysis) return;
 
             let content = `PLACEMENT READINESS ANALYSIS\n`;
-            content += `Company: ${currentAnalysis.company}\n`;
-            content += `Role: ${currentAnalysis.role}\n`;
-            content += `Readiness Score: ${currentAnalysis.readinessScore}/100\n`;
+            content += `Company: ${currentAnalysis.company || 'N/A'}\n`;
+            content += `Role: ${currentAnalysis.role || 'N/A'}\n`;
+            content += `Readiness Score: ${currentAnalysis.finalScore || currentAnalysis.readinessScore || 0}/100\n`;
             content += `Date: ${new Date(currentAnalysis.createdAt).toLocaleDateString()}\n\n`;
             content += `${'='.repeat(60)}\n\n`;
 
@@ -520,7 +541,8 @@
             content += `\n${'='.repeat(60)}\n\n`;
 
             content += `7-DAY PREPARATION PLAN\n\n`;
-            Object.entries(currentAnalysis.plan).forEach(([day, tasks]) => {
+            const plan = currentAnalysis.plan7Days || currentAnalysis.plan || {};
+            Object.entries(plan).forEach(([day, tasks]) => {
                 content += `${day}\n`;
                 tasks.forEach(task => content += `  • ${task}\n`);
                 content += '\n';
@@ -899,7 +921,7 @@
                                 <p class="text-slate-500">${analysis.role}</p>
                             </div>
                             <div class="text-center">
-                                <p class="text-5xl font-bold text-primary">${analysis.readinessScore}</p>
+                                <p class="text-5xl font-bold text-primary">${analysis.finalScore || analysis.readinessScore || 0}</p>
                                 <p class="text-sm text-slate-500">Readiness Score</p>
                             </div>
                         </div>
