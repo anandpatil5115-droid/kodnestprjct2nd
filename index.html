@@ -970,35 +970,13 @@ ${data.questions.map((q, i) => `${i + 1}. ${q}`).join('\n')}
         );
 
         // --- App Entry Point ---
-        window.addEventListener('load', () => {
-            try {
-                // Dependency Check
-                const deps = {
-                    'React': window.React,
-                    'ReactDOM': window.ReactDOM,
-                    'ReactRouterDOM': window.ReactRouterDOM
-                };
-                const missing = Object.entries(deps).filter(([k, v]) => !v).map(([k]) => k);
-                if (missing.length > 0) {
-                    throw new Error(`Missing dependencies: ${missing.join(', ')}`);
-                }
-
-                const root = ReactDOM.createRoot(document.getElementById('root'));
-                root.render(<App />);
-            } catch (err) {
-                console.error("Critical error:", err);
-                const msg = err.message || err.toString();
-                document.getElementById('root').innerHTML = `
-                <div style="color: #ef4444; padding: 20px; font-family: system-ui; max-width: 600px; margin: 0 auto; text-align: center;">
-                    <div style="font-size: 48px; margin-bottom: 20px;">⚠️</div>
-                    <h2 style="margin-bottom: 10px;">Application Error</h2>
-                    <p style="color: #374151; margin-bottom: 20px;">The application failed to start.</p>
-                    <div style="background: #f3f4f6; padding: 15px; border-radius: 8px; font-family: monospace; font-size: 12px; text-align: left; overflow: auto;">
-                        ${msg}
-                    </div>
-                </div>`;
-            }
-        });
+        try {
+            const root = ReactDOM.createRoot(document.getElementById('root'));
+            root.render(<App />);
+        } catch (err) {
+            console.error("Critical error:", err);
+            document.getElementById('root').innerHTML = '<div style="color: red; padding: 20px; font-family: sans-serif;">Failed to load application. See console.</div>';
+        }
     </script>
 </body>
 
