@@ -4,215 +4,305 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KodNest Premium - Job Tracker</title>
-    <!-- Use the new KodNest Premium Design System -->
-    <link rel="stylesheet" href="kodnest-premium.css">
+    <title>Placement Prep | Ace Your Placement</title>
 
-    <!-- Load Jobs Data -->
-    <script src="jobs.js"></script>
+    <!-- React, ReactDOM, Babel, React Router, Lucide Icons CDNs -->
+    <script src="https://unpkg.com/react@18.2.0/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone@7.23.5/babel.min.js"></script>
+    <script src="https://unpkg.com/react-router-dom@6.22.3/umd/react-router-dom.production.min.js"></script>
+    <script src="https://unpkg.com/lucide@0.263.1/dist/umd/lucide.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        // Tailwind Configuration
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            DEFAULT: 'hsl(245, 58%, 51%)',
+                            light: 'hsl(245, 58%, 65%)',
+                            dark: 'hsl(245, 58%, 40%)',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
 
     <style>
-        /* Specific overrides for app functionality if needed */
-        .kn-job-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: var(--s-2);
-        }
-
-        .kn-job-title {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--c-text-primary);
-            margin-bottom: var(--s-1);
-        }
-
-        .kn-company {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--c-text-secondary);
-        }
-
-        .kn-job-meta {
-            display: flex;
-            gap: var(--s-2);
-            font-size: 13px;
-            color: var(--c-text-secondary);
-            margin-bottom: var(--s-2);
-            flex-wrap: wrap;
-        }
-
-        .kn-filter-bar {
-            display: flex;
-            gap: var(--s-2);
-            padding: var(--s-2);
-            background: var(--c-surface);
-            border-bottom: 1px solid var(--c-border);
-            margin-bottom: var(--s-3);
-            flex-wrap: wrap;
-        }
-
-        .kn-job-list {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: var(--s-3);
-        }
-
-        /* Modal Styles */
-        .kn-modal-backdrop {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(0, 0, 0, 0.5);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        .kn-modal-content {
-            background: var(--c-surface);
-            padding: var(--s-4);
-            border-radius: 8px;
-            width: 90%;
-            max-width: 600px;
-            max-height: 90vh;
-            overflow-y: auto;
-            position: relative;
-        }
-
-        .kn-close-btn {
-            position: absolute;
-            top: var(--s-2);
-            right: var(--s-2);
-            background: none;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            color: var(--c-text-secondary);
-        }
-
-        /* Toast Styles */
-        #kn-toast-container {
-            position: fixed;
-            bottom: var(--s-4);
-            right: var(--s-4);
-            display: flex;
-            flex-direction: column;
-            gap: var(--s-2);
-            z-index: 2000;
-        }
-
-        .kn-toast {
-            background: #333;
-            color: #fff;
-            padding: 12px 24px;
-            border-radius: 4px;
-            font-size: 14px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            animation: slideIn 0.3s ease-out;
-        }
-
-        @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
+        /* Lucide icon resizing fix */
+        svg {
+            display: inline-block;
         }
     </style>
 </head>
 
-<body>
-
-    <div class="app-container">
-        <!-- TOP BAR -->
-        <header class="top-bar kn-header">
-            <div class="top-bar-left">
-                <span class="brand-name">KodNest Premium</span>
-            </div>
-            <div class="top-bar-center">
-                <span class="subtext">Step <span id="step-indicator">1/6</span></span>
-            </div>
-            <div class="top-bar-right">
-                <span id="status-badge" class="badge badge-progress">Initializing</span>
-            </div>
-        </header>
-
-        <!-- CONTEXT HEADER -->
-        <section class="context-header kn-header">
-            <h1 class="kn-title">Welcome</h1>
-            <p class="subtext kn-subtext">Initializing the premium experience...</p>
-        </section>
-
-        <!-- MAIN WORKSPACE -->
-        <main class="workspace">
-
-            <!-- PRIMARY PANEL (70%) -->
-            <div class="primary-panel" id="primary-workspace">
-                <!-- Content injected here by app.js -->
-                <div class="card">
-                    <h3>Loading application resources...</h3>
+<body class="bg-slate-50 text-slate-900">
+    <div id="root">
+        <div
+            style="display: flex; height: 100vh; align-items: center; justify-content: center; font-family: sans-serif; color: #6366f1;">
+            <div style="text-align: center;">
+                <div
+                    style="width: 40px; height: 40px; border: 3px solid #e0e7ff; border-top-color: #6366f1; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 16px;">
                 </div>
+                <p style="font-weight: 500;">Loading Placement Prep...</p>
             </div>
-
-            <!-- SECONDARY PANEL (30%) -->
-            <aside class="secondary-panel" id="secondary-panel">
-                <!-- Content injected here by app.js -->
-            </aside>
-
-        </main>
-
-        <!-- PROOF FOOTER -->
-        <footer class="proof-footer">
-            <div style="display: flex; gap: var(--s-3);">
-                <!-- Checkboxes managed by app.js logic or static for now -->
-                <div class="proof-item">
-                    <div class="checkbox checked"></div>
-                    <span>UI Built</span>
-                </div>
-                <div class="proof-item">
-                    <div class="checkbox checked"></div>
-                    <span>Logic Active</span>
-                </div>
-                <div class="proof-item">
-                    <div class="checkbox"></div>
-                    <span>Tests Passed</span>
-                </div>
-            </div>
-            <div>
-                <button class="btn btn-primary" style="height: 32px; padding: 0 16px;">Ship It</button>
-            </div>
-        </footer>
-
-    </div>
-
-    <!-- Job Modal -->
-    <div id="job-modal" class="kn-modal-backdrop">
-        <div class="kn-modal-content">
-            <button class="kn-close-btn" onclick="closeModal()">×</button>
-            <div id="modal-content"></div>
         </div>
     </div>
 
-    <!-- App Logic -->
-    <script src="app.js"></script>
-    <script>
-        // Initialize App
-        window.addEventListener('load', () => {
-            if (window.handleRouteChange) {
-                window.handleRouteChange();
-                window.addEventListener('hashchange', window.handleRouteChange);
-            } else {
-                console.error("Layout initialization failed: handleRouteChange missing.");
+    <style>
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
             }
-        });
+        }
+    </style>
+
+    <script type="text/babel">
+        const { useState, createElement } = React;
+        const { HashRouter, Routes, Route, Link, useNavigate, Outlet, useLocation } = ReactRouterDOM;
+
+        // --- Lucide Icon Wrapper Component ---
+        const Icon = ({ name, size = 20, className = "" }) => {
+            const [iconSvg, setIconSvg] = useState(null);
+
+            React.useEffect(() => {
+                if (window.lucide) {
+                    const icon = window.lucide.icons[name];
+                    if (icon) {
+                        const attrs = {
+                            ...icon[1],
+                            width: size,
+                            height: size,
+                            class: `lucide lucide-${name} ${className}`
+                        };
+                        const children = icon[2].map((tag, i) =>
+                            createElement(tag[0], { key: i, ...tag[1] })
+                        );
+                        setIconSvg(createElement('svg', attrs, children));
+                    }
+                }
+            }, [name, size, className]);
+
+            return iconSvg || <span className="w-5 h-5 inline-block" style={{ width: size, height: size }}></span>;
+        };
+
+        // --- Landing Page ---
+        const LandingPage = () => {
+            const navigate = useNavigate();
+
+            return (
+                <div className="min-h-screen flex flex-col bg-white text-slate-900">
+                    {/* Navigation */}
+                    <nav className="flex items-center justify-between px-8 py-4 border-b border-slate-100">
+                        <div className="flex items-center gap-2">
+                            <Icon name="layout" className="text-primary" />
+                            <span className="text-xl font-bold">Placement Prep</span>
+                        </div>
+                        <div className="flex items-center gap-6 text-sm font-medium">
+                            <a href="#" className="text-slate-600 hover:text-primary transition-colors">Features</a>
+                            <a href="#" className="text-slate-600 hover:text-primary transition-colors">About</a>
+                            <button onClick={() => navigate('/dashboard')} className="bg-primary text-white px-6 py-2 rounded-full hover:bg-primary-dark transition-all shadow-md">
+                                Login
+                            </button>
+                        </div>
+                    </nav>
+
+                    {/* Hero Section */}
+                    <header className="flex-1 flex flex-col items-center justify-center text-center px-4 py-20 bg-gradient-to-b from-indigo-50/50 to-white">
+                        <div className="inline-block px-4 py-1.5 mb-6 text-sm font-bold tracking-wide text-primary uppercase bg-indigo-100/50 rounded-full">
+                            Your Career Starts Here
+                        </div>
+                        <h1 className="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight">
+                            Ace Your <span className="text-primary">Placement</span>
+                        </h1>
+                        <p className="text-xl text-slate-600 max-w-2xl mb-10 leading-relaxed">
+                            Practice, assess, and prepare for your dream job with our comprehensive placement readiness platform.
+                        </p>
+                        <button onClick={() => navigate('/dashboard')} className="bg-primary text-white px-10 py-4 rounded-full text-lg font-bold hover:bg-primary-dark transition-all hover:scale-105 shadow-xl shadow-primary/30 active:scale-95">
+                            Get Started
+                        </button>
+                    </header>
+
+                    {/* Features Grid */}
+                    <section className="py-24 px-8 bg-slate-50/50">
+                        <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-8">
+                            <div className="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all">
+                                <div className="w-12 h-12 bg-indigo-100 text-primary rounded-xl flex items-center justify-center mb-6">
+                                    <Icon name="code" size={24} />
+                                </div>
+                                <h3 className="text-xl font-bold mb-2">Practice Problems</h3>
+                                <p className="text-slate-500">Master coding challenges and system design concepts with real-time feedback.</p>
+                            </div>
+                            <div className="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all">
+                                <div className="w-12 h-12 bg-purple-100 text-purple-600 rounded-xl flex items-center justify-center mb-6">
+                                    <Icon name="video" size={24} />
+                                </div>
+                                <h3 className="text-xl font-bold mb-2">Mock Interviews</h3>
+                                <p className="text-slate-500">Prepare for behavioral and technical rounds with interactive simulation sessions.</p>
+                            </div>
+                            <div className="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all">
+                                <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center mb-6">
+                                    <Icon name="bar-chart-3" size={24} />
+                                </div>
+                                <h3 className="text-xl font-bold mb-2">Track Progress</h3>
+                                <p className="text-slate-500">Analyze your performance metrics and readiness levels with advanced data insights.</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Footer */}
+                    <footer className="py-12 border-t border-slate-100 text-center text-slate-400 text-xs font-medium">
+                        <p>© 2026 Placement Prep. All rights reserved.</p>
+                    </footer>
+                </div>
+            );
+        };
+
+        // --- Dashboard Layout ---
+        const NavLink = ({ to, icon, label }) => {
+            const location = useLocation();
+            const isActive = location.pathname === to;
+
+            return (
+                <Link to={to} className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${isActive ? 'bg-primary text-white shadow-md' : 'text-slate-600 hover:bg-slate-100 hover:text-primary'
+                    }`}>
+                    <Icon name={icon} />
+                    <span className="font-medium">{label}</span>
+                </Link>
+            );
+        };
+
+        const DashboardLayout = () => {
+            return (
+                <div className="flex h-screen bg-slate-50 overflow-hidden text-slate-900">
+                    {/* Sidebar */}
+                    <aside className="w-64 bg-white border-r border-slate-200 flex flex-col shrink-0">
+                        <div className="p-6 border-b border-slate-200">
+                            <h2 className="text-xl font-bold text-primary flex items-center gap-2">
+                                <Icon name="layout" className="text-primary" />
+                                Placement Prep
+                            </h2>
+                        </div>
+                        <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
+                            <NavLink to="/dashboard" icon="layout-dashboard" label="Dashboard" />
+                            <NavLink to="/dashboard/practice" icon="code-2" label="Practice" />
+                            <NavLink to="/dashboard/assessments" icon="clipboard-check" label="Assessments" />
+                            <NavLink to="/dashboard/resources" icon="library" label="Resources" />
+                            <NavLink to="/dashboard/profile" icon="user" label="Profile" />
+                        </nav>
+                        <div className="p-4 border-t border-slate-200">
+                            <Link to="/" className="flex items-center gap-3 px-3 py-2 text-slate-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                                <Icon name="log-out" />
+                                <span className="font-medium">Sign Out</span>
+                            </Link>
+                        </div>
+                    </aside>
+
+                    {/* Main Content */}
+                    <div className="flex-1 flex flex-col h-full overflow-hidden">
+                        {/* Header */}
+                        <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-8 shrink-0">
+                            <h1 className="text-lg font-semibold text-slate-700">Placement Prep</h1>
+                            <div className="flex items-center gap-4">
+                                <button className="p-2 text-slate-500 hover:bg-slate-100 rounded-full transition-colors relative">
+                                    <Icon name="bell" />
+                                    <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+                                </button>
+                                <div className="flex items-center gap-3 pl-4 border-l border-slate-200">
+                                    <div className="text-right">
+                                        <p className="text-sm font-medium">Student</p>
+                                        <p className="text-xs text-slate-500">Candidate</p>
+                                    </div>
+                                    <div className="w-10 h-10 rounded-full bg-primary/10 border-2 border-primary/20 flex items-center justify-center overflow-hidden">
+                                        <Icon name="user" className="text-primary" />
+                                    </div>
+                                </div>
+                            </div>
+                        </header>
+
+                        {/* Page Content */}
+                        <main className="flex-1 overflow-y-auto p-8">
+                            <Outlet />
+                        </main>
+                    </div>
+                </div>
+            );
+        };
+
+        // --- Placeholder Pages ---
+        const PagePlaceholder = ({ title, description }) => (
+            <div className="max-w-4xl">
+                <h2 className="text-2xl font-bold text-slate-900 mb-2">{title}</h2>
+                <p className="text-slate-500 mb-8 font-medium">{description}</p>
+                <div className="bg-white rounded-xl border border-slate-200 shadow-sm h-64 flex flex-col items-center justify-center text-slate-300 gap-4">
+                    <Icon name="construction" size={48} className="opacity-20" />
+                    <span className="italic font-medium">This module is currently under development.</span>
+                </div>
+            </div>
+        );
+
+        const DashboardPage = () => (
+            <PagePlaceholder
+                title="Dashboard"
+                description="Your personalized placement preparation dashboard."
+            />
+        );
+
+        const PracticePage = () => (
+            <PagePlaceholder
+                title="Practice"
+                description="Solve coding problems and improve your skills."
+            />
+        );
+
+        const AssessmentsPage = () => (
+            <PagePlaceholder
+                title="Assessments"
+                description="Take mock tests and evaluate your readiness."
+            />
+        );
+
+        const ResourcesPage = () => (
+            <PagePlaceholder
+                title="Resources"
+                description="Access study materials and preparation guides."
+            />
+        );
+
+        const ProfilePage = () => (
+            <PagePlaceholder
+                title="Profile"
+                description="Manage your account and track your progress."
+            />
+        );
+
+        // --- App Component ---
+        const App = () => (
+            <HashRouter>
+                <Routes>
+                    <Route path="/" element={<LandingPage />} />
+                    <Route path="/dashboard" element={<DashboardLayout />}>
+                        <Route index element={<DashboardPage />} />
+                        <Route path="practice" element={<PracticePage />} />
+                        <Route path="assessments" element={<AssessmentsPage />} />
+                        <Route path="resources" element={<ResourcesPage />} />
+                        <Route path="profile" element={<ProfilePage />} />
+                    </Route>
+                </Routes>
+            </HashRouter>
+        );
+
+        // --- App Entry Point ---
+        try {
+            const root = ReactDOM.createRoot(document.getElementById('root'));
+            root.render(<App />);
+        } catch (err) {
+            console.error("Critical error:", err);
+            document.getElementById('root').innerHTML = '<div style="color: red; padding: 20px; font-family: sans-serif;">Failed to load application. See console.</div>';
+        }
     </script>
 </body>
 
